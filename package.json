@@ -2,12 +2,14 @@
   "name": "hungernova-web-api",
   "version": "0.1.0",
   "private": true,
+
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint"
   },
+
   "dependencies": {
     "next": "16.4.5",
     "react": "19.3.0",
