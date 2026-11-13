@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { CAMPAIGNS } from '@/lib/data';
 import prisma from '../../../db';
-export const dynamic = 'force-dynamic';
+import { connection } from 'next/server';
+
 export default async function Campaigns() {
-  
+  await connection();
   const campaigns = await prisma.Campaign.findMany({
     orderBy:{
       createdAt:'desc'
