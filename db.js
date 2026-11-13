@@ -1,18 +1,24 @@
-const { createClient } = require('@supabase/supabase-js');
+import { PrismaClient } from './src/generated/prisma/client.js';
+import { PrismaPg } from '@prisma/adapter-pg';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_API_KEY
-);
+const adapter = new PrismaPg({
+  connectionString: process.env.DATABASE_URL,
+});
 
-// Test the connection
-supabase
-  .from('your_table')
-  .select('*')
-  .limit(1)
-  .then(({ data, error }) => {
-    if (error) console.error('Connection error:', error);
-    else console.log('Connected:', data);
+const prismaClientSingleton = () => {
+  return new PrismaClient({
+    adapter,
   });
+};
 
-module.exports = supabase;
+// Use global to prevent multiple instances in dev
+const globalForPrisma = global;
+
+const prisma =
+  globalForPrisma.prismaGlobal ?? prismaClientSingleton();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prismaGlobal = prisma;
+}
+
+export default prisma;

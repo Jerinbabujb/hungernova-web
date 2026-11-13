@@ -4,7 +4,7 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -17,4 +17,42 @@ model User{
   name String
   email String
   password  String
+}
+
+model Campaign{
+  id                     String @id @default(uuid())
+  campaign_name          String
+  campaign_organization   String
+  total                  String
+  raised                 String
+  last_date              DateTime
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @default(now())
+}
+
+model Request{
+  id              String @id @default(uuid())
+  name            String
+  contact_number  String
+  type            String
+  notes           String
+}
+
+model Donation {
+  id              String   @id @default(uuid())
+  donor_name      String
+  contact_number  String
+  amount          Float
+  food_type       String?  // Optional if they are donating physical food instead of money
+  notes           String?
+  createdAt       DateTime @default(now())
+}
+
+model Volunteer {
+  id              String   @id @default(uuid())
+  name            String
+  contact_number  String
+  role            String   // e.g., Driver, Kitchen Staff, Distributor
+  notes           String?
+  createdAt       DateTime @default(now())
 }

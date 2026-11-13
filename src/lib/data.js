@@ -1,5 +1,5 @@
 export const CAMPAIGNS = [
-  { id: '1', title: 'Downtown LA Food Drive', organization: 'LA Food Rescue', raised: 4500, goal: 5000, daysLeft: 3 },
+  { id: '1', title: 'Downtown LA Food', organization: 'LA Food Rescue', raised: 4500, goal: 5000, daysLeft: 3 },
   { id: '2', title: 'SF School Breakfast Initiative', organization: 'Bay Area Meals', raised: 1200, goal: 3000, daysLeft: 12 },
   { id: '3', title: 'Central Valley Farm Rescue', organization: 'AgriShare CA', raised: 8900, goal: 10000, daysLeft: 5 },
 ];

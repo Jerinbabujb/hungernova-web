@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { submitFoodRequest } from './actions';
 
 const FOOD_CATEGORIES = ['Produce', 'Prepared Meals', 'Pantry', 'Dairy & Meat'];
 
@@ -9,10 +10,23 @@ export default function RequestFood() {
   const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+   const formData = new FormData(e.currentTarget);
+   try{
+    await submitFoodRequest({
+      name:formData.get('name'),
+      contact_number:formData.get('conatct_number'),
+      type:selectedCategory,
+      notes:formData.get('notes')
+    });
     alert("Request Submitted!");
     router.push('/home');
+   }
+   catch(error){
+    console.error(error);
+   }
+    
   };
 
   return (
@@ -25,11 +39,11 @@ export default function RequestFood() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Organization / Name <span className="text-red-500">*</span></label>
-            <input type="text" className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-700" placeholder="e.g. Downtown Shelter" required />
+            <input type="text" name='name' className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-700" placeholder="e.g. Downtown Shelter" required />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number <span className="text-red-500">*</span></label>
-            <input type="tel" className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-700" placeholder="(555) 123-4567" required />
+            <input type="tel" name='conatct_number' className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-700" placeholder="(555) 123-4567" required />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Type of Food Needed <span className="text-red-500">*</span></label>
@@ -50,7 +64,7 @@ export default function RequestFood() {
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Additional Notes</label>
-            <textarea className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-700 h-24" placeholder="Any specific requirements?"></textarea>
+            <textarea name='notes' className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-700 h-24" placeholder="Any specific requirements?"></textarea>
           </div>
           
           <button type="submit" className="w-full bg-green-700 text-white font-bold py-4 rounded-xl shadow-md hover:bg-green-800 transition">
