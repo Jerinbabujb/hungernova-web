@@ -1,6 +1,17 @@
 import { NextResponse } from 'next/server';
-import { CAMPAIGNS } from '@/lib/data';
+import prisma from '../../../db';
 
 export async function GET() {
-  return NextResponse.json({ success: true, data: CAMPAIGNS }, { status: 200 });
+  try {
+    const campaigns = await prisma.campaign.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+    
+    // Return the data as standard JSON
+    return NextResponse.json(campaigns);
+  } catch (error) {
+    return NextResponse.json({ error: "Failed to fetch campaigns" }, { status: 500 });
+  }
 }
