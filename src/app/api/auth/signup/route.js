@@ -1,6 +1,7 @@
 import { SignJWT } from "jose";
 import prisma from "../../../../../db";
 import { NextResponse } from "next/server";
+import bcrypt from "bcryptjs";
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET_KEY || 'your-super-secret-development-key');
 
