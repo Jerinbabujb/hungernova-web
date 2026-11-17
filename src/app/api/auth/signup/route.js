@@ -9,8 +9,9 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET_KEY || 'your-
 export async function POST(request){
     try{
     const data = await request.json();
-    if(!data) return{error:"No data entered"};
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    if(!data) {
+        return NextResponse.json({error:"no data entered"},{status:400});}
+    const existingUser = await prisma.user.findUnique({ where: { email:data.email } });
     if (existingUser) {
       return NextResponse.json({ error: "Email already registered" }, { status: 400 });
     }
@@ -28,10 +29,11 @@ export async function POST(request){
     .setExpirationTime('7d')
     .sign(JWT_SECRET);
 
-    return NextResponse.json({token,signup:{name:signup.name,email:signup.email}},{status:200});
+    return NextResponse.json({token,signup:{name:signup.name,email:signup.email}},{status:201});
     }
 
     catch(error){
         console.log(error);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
