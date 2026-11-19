@@ -1,22 +1,35 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { submitDonation } from './actions';
+import { getUserName, submitDonation } from './actions';
+
 
 const DONATION_AMOUNTS = ['10', '25', '50', '100'];
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET_KEY || 'your-super-secret-development-key');
 
 export default function Donate() {
   const router = useRouter();
+  const [donorName,setDonorName]= useState('');
   const [selectedAmount, setSelectedAmount] = useState('25');
 
+  useEffect(()=>{
+    const getUser=async ()=>{
+      const name = await getUserName();
+      setDonorName(name);
+    }
+    getUser();
+  },[])
+  
   const handleSubmit = async (e) => {
+   
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    
     try {
+
+     
       await submitDonation({
-        donor_name: formData.get('donor_name'),
+        donor_name: donorName,
         contact_number: formData.get('contact_number'),
         amount: selectedAmount === 'Custom' ? formData.get('custom_amount') : selectedAmount,
         notes: formData.get('notes')
@@ -38,8 +51,8 @@ export default function Donate() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Name <span className="text-red-500">*</span></label>
-            <input type="text" name='donor_name' className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-700" required />
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Name<span className="text-red-500">*</span></label>
+            <input type="text" name='donor_name' value={donorName} onChange={(e)=>setDonorName(e.target.value)}  className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-700" required />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number <span className="text-red-500">*</span></label>

@@ -1,14 +1,25 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { submitVolunteer } from './actions';
+import { getUserName } from '../donate/actions';
 
 const VOLUNTEER_ROLES = ['Delivery Driver', 'Food Sorter', 'Kitchen Prep', 'Event Staff'];
 
 export default function Volunteer() {
   const router = useRouter();
+  const [userName,setUserName] = useState('');
   const [selectedRole, setSelectedRole] = useState(null);
+
+  useEffect(()=>{
+    const getName= async ()=>{
+      const data = await getUserName();
+      setUserName(data);
+      console.log("username",userName);
+    }
+    getName();
+  },[])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,7 +55,7 @@ export default function Volunteer() {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name <span className="text-red-500">*</span></label>
-            <input type="text" name='name' className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-700" required />
+            <input type="text" name='name' value={userName} onChange={(e)=>setUserName(e.target.value)} className="w-full border border-gray-300 rounded-xl px-4 py-3 focus:ring-2 focus:ring-green-700" required />
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Contact Number <span className="text-red-500">*</span></label>
