@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { getActiveCampaigns } from './actions';
+import { getActiveCampaigns, getActiveCampaignsCount } from './actions';
 
 export default function Campaigns() {
   const [campaigns, setCampaigns] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [campaignCount, setCampaignCount] = useState('');
 
   useEffect(() => {
     async function fetchCampaigns() {
@@ -23,11 +24,19 @@ export default function Campaigns() {
     fetchCampaigns();
   }, []);
 
+  useEffect(()=>{
+    const getCount = async ()=>{
+      const count = await getActiveCampaignsCount();
+      setCampaignCount(count);
+    }
+    getCount()
+  },[])
+
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-md mx-auto">
         <Link href="/home" className="text-gray-500 mb-4 inline-block hover:text-gray-900">← Back</Link>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-6">Active Campaigns</h1>
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-6">Active Campaigns ({campaignCount})</h1>
         
         {loading ? (
           <div className="text-center text-gray-500 py-10 font-medium">Loading campaigns...</div>
@@ -53,7 +62,7 @@ export default function Campaigns() {
                     <button className="flex-1 bg-green-50 text-green-700 font-semibold py-3 rounded-xl border border-green-700 hover:bg-green-100 transition">
                       Support
                     </button>
-                    <Link href={`/donate?id=${campaign.id}&title=${encodeURIComponent(campaign.campaign_name)}`} className="flex-1 text-center bg-green-700 text-white font-semibold py-3 rounded-xl shadow-md hover:bg-green-800 transition">
+                    <Link href={{pathname:'/donate',query:{campaignName:campaign.campaign_name,campaignId:campaign.id}}} className="flex-1 text-center bg-green-700 text-white font-semibold py-3 rounded-xl shadow-md hover:bg-green-800 transition">
                       Donate
                     </Link>
                   </div>

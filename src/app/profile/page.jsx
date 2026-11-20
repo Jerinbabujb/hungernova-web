@@ -1,14 +1,33 @@
+"use client";
 import Link from 'next/link';
 import { MOCK_USER } from '@/lib/data';
+import { useEffect, useState } from 'react';
+import { getDonatedAmount, getUserEmail, getUserName } from '../donate/actions';
 
 const MENU_ITEMS = [
-  { id: '1', title: 'Edit Profile', icon: '👤' },
-  { id: '2', title: 'My Donations', icon: '❤️' },
-  { id: '3', title: 'Notifications', icon: '🔔' },
-  { id: '4', title: 'Settings', icon: '⚙️' },
+  { id: '1', title: 'Edit Profile', icon: '👤', href: '/profile/edit' },
+  { id: '2', title: 'My Donations', icon: '❤️', href: '/mydonations' },
+  { id: '3', title: 'Notifications', icon: '🔔', href: '/notifications' },
+  { id: '4', title: 'Settings', icon: '⚙️', href: '/settings' },
 ];
 
+
 export default function Profile() {
+  const [userName,setUserName] = useState('');
+  const [userEmail,setUserEmail] = useState('');
+  const [totalAmount,setTotalAmount] = useState('');
+
+  useEffect(()=>{
+    const getName = async()=>{
+      const savedName = await getUserName();
+      const savedEmail = await getUserEmail();
+      const savedAmount = await getDonatedAmount();
+      setUserName(savedName);
+      setUserEmail(savedEmail);
+      setTotalAmount(savedAmount);
+    }
+    getName();
+  },[])
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-md mx-auto">
@@ -17,8 +36,8 @@ export default function Profile() {
 
         <div className="flex flex-col items-center mb-8">
           <img src={MOCK_USER.avatar} alt="Profile" className="w-24 h-24 rounded-full border-4 border-green-700 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900">{MOCK_USER.name}</h2>
-          <p className="text-gray-500">{MOCK_USER.email}</p>
+          <h2 className="text-2xl font-bold text-gray-900">{userName}</h2>
+          <p className="text-gray-500">{userEmail}</p>
         </div>
 
         {/* Stats */}
@@ -31,7 +50,7 @@ export default function Profile() {
             </div>
             <div className="w-px h-10 bg-gray-200 mx-2"></div>
             <div className="flex-1">
-              <p className="text-2xl font-extrabold text-green-700">${MOCK_USER.impact.donations}</p>
+              <p className="text-2xl font-extrabold text-green-700">${totalAmount}</p>
               <p className="text-xs text-gray-500 font-semibold">Donated</p>
             </div>
             <div className="w-px h-10 bg-gray-200 mx-2"></div>
@@ -43,15 +62,19 @@ export default function Profile() {
         </div>
 
         {/* Menu */}
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-8">
-          {MENU_ITEMS.map((item) => (
-            <button key={item.id} className="w-full flex items-center px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition text-left">
-              <span className="text-xl mr-4">{item.icon}</span>
-              <span className="flex-1 font-semibold text-gray-700">{item.title}</span>
-              <span className="text-gray-300">❯</span>
-            </button>
-          ))}
-        </div>
+<div className="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-8">
+  {MENU_ITEMS.map((item) => (
+    <Link
+      href={item.href}
+      key={item.id}
+      className="w-full flex items-center px-6 py-4 border-b border-gray-50 hover:bg-gray-50 transition text-left"
+    >
+      <span className="text-xl mr-4">{item.icon}</span>
+      <span className="flex-1 font-semibold text-gray-700">{item.title}</span>
+      <span className="text-gray-300">❯</span>
+    </Link>
+  ))}
+</div>
 
         <Link href="/" className="w-full flex justify-center items-center bg-red-50 text-red-600 font-bold py-4 rounded-xl border border-red-200 hover:bg-red-100 transition">
           Log Out

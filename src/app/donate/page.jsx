@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { getUserName, submitDonation } from './actions';
 
 
@@ -12,7 +12,8 @@ export default function Donate() {
   const router = useRouter();
   const [donorName,setDonorName]= useState('');
   const [selectedAmount, setSelectedAmount] = useState('25');
-
+  const searchParams = useSearchParams();
+  const campaignName = searchParams.get('campaignName');
   useEffect(()=>{
     const getUser=async ()=>{
       const name = await getUserName();
@@ -46,7 +47,7 @@ export default function Donate() {
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-md mx-auto pb-24">
         <Link href="/home" className="text-gray-500 mb-4 inline-block">← Back</Link>
-        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Make a Donation</h1>
+        <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Make a Donation for {campaignName}</h1>
         <p className="text-gray-500 mb-8">Your contribution helps us distribute surplus food to those in need.</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">

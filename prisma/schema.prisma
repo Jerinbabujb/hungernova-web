@@ -18,6 +18,9 @@ model User{
   email String  @unique
   password  String
   createdAt DateTime  @default(now())
+
+  donations                 Donation[]
+  volunteer                 Volunteer[]
 }
 
 model Campaign{
@@ -29,6 +32,7 @@ model Campaign{
   last_date              DateTime
   createdAt              DateTime @default(now())
   updatedAt              DateTime @default(now())
+  
 }
 
 model Request{
@@ -47,6 +51,9 @@ model Donation {
   food_type       String?  // Optional if they are donating physical food instead of money
   notes           String?
   createdAt       DateTime @default(now())
+
+  userId          String?
+  user            User?    @relation(fields:[userId],references : [id])
 }
 
 model Volunteer {
@@ -56,4 +63,8 @@ model Volunteer {
   role            String   // e.g., Driver, Kitchen Staff, Distributor
   notes           String?
   createdAt       DateTime @default(now())
+
+
+  userId         String?
+  user           User?  @relation(fields:[userId], references: [id])
 }

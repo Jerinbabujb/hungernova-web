@@ -1,15 +1,48 @@
+"use client";
 import Link from 'next/link';
 import { MOCK_USER } from '@/lib/data';
+import { useEffect, useState } from 'react';
+import { getDonatedAmount, getUserName } from '../donate/actions';
+import { getVolunterCount } from '../volunteer/actions';
 
 export default function Home() {
+
+  const [userName,setUserName] = useState('');
+  const [ totalAmount, setTotalAmount] =useState('');
+  const [volunteerCount, setVolunteerCount] = useState('');
+
+  useEffect(()=>{
+    const getName=async()=>{
+      const savedName = await getUserName();
+      setUserName(savedName);
+    }
+    getName();
+  },[])
+
+  useEffect(()=>{
+    const getTotalAmount=async()=>{
+      const savedAmount = await getDonatedAmount();
+      setTotalAmount(savedAmount);
+    }
+    getTotalAmount();
+  },[])
+
+  useEffect(()=>{
+    const getTotalVolunteerCount=async()=>{
+      const savedCount = await getVolunterCount();
+            console.log("savedcount", savedCount);
+      setVolunteerCount(savedCount);
+    }
+    getTotalVolunteerCount();
+  },[])
+
   return (
     <main className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <p className="text-gray-500 text-sm">Good Morning,</p>
-            <h1 className="text-3xl font-extrabold text-gray-900">{MOCK_USER.name.split(' ')[0]} 👋</h1>
+            <h1 className="text-3xl font-extrabold text-gray-900">{userName} 👋</h1>
           </div>
           <Link href="/profile">
             <img src={MOCK_USER.avatar} alt="Profile" className="w-12 h-12 rounded-full border-2 border-green-700" />
@@ -26,7 +59,12 @@ export default function Home() {
             </div>
             <div className="w-px h-10 bg-green-500 mx-4"></div>
             <div className="flex-1">
-              <p className="text-3xl font-extrabold">18</p>
+              <p className="text-3xl font-extrabold">${totalAmount}</p>
+              <p className="text-green-200 text-sm">Donted</p>
+            </div>
+            <div className="w-px h-10 bg-green-500 mx-4"></div>
+            <div className="flex-1">
+              <p className="text-3xl font-extrabold">{volunteerCount}</p>
               <p className="text-green-200 text-sm">Active Drives</p>
             </div>
           </div>
