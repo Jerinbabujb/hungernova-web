@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getUserName, submitDonation } from './actions';
@@ -8,7 +8,7 @@ import { getUserName, submitDonation } from './actions';
 const DONATION_AMOUNTS = ['10', '25', '50', '100'];
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET_KEY || 'your-super-secret-development-key');
 
-export default function Donate() {
+ function DonateForm() {
   const router = useRouter();
   const [donorName,setDonorName]= useState('');
   const [selectedAmount, setSelectedAmount] = useState('25');
@@ -98,4 +98,11 @@ export default function Donate() {
       </div>
     </main>
   );
+}
+
+
+export default function Donate(){
+  <Suspense fallback={<div className="p-6 text-center text-gray-500">Loading...</div>}>
+    <DonateForm/>
+  </Suspense>
 }
