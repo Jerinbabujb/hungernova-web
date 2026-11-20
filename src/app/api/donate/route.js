@@ -44,7 +44,7 @@ export async function GET(request){
       where:{userId:userId}
     });
     const totalAmount = donations.reduce((sum, item)=>sum+Number(item.amount+0||0),0);
-   return NextResponse.json(donations, totalAmount);
+   return NextResponse.json({donations, totalAmount});
   }
   catch (error) {
     console.error("Donation API Error:", error);
